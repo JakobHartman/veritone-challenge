@@ -2,27 +2,43 @@ import React from 'react';
 import logo from './logo.svg';
 import Box from '@mui/material/Box';
 import './App.css';
-import { AppBar, Icon, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Container, Icon, Stack, Toolbar, Typography } from '@mui/material';
+import UseShoppingList from './components/hooks/useShoppingList';
+import { styles } from './styles'
 
 function App() {
-  return (
-    <Box>
-        <AppBar>
-          <Toolbar variant='dense'>
-            <Icon>
+  
+  const {shoppingList} = UseShoppingList();
 
-            </Icon>
+  function handleAddItem(){
+
+  }
+
+  return (
+    <Stack>
+      <AppBar position='sticky' sx={styles.appBar}>
+        <Toolbar variant='dense'>
+          <Icon>
+
+          </Icon>
+          <Typography>
+            Shopping List
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="sm" sx={styles.main}> 
+      {
+        shoppingList.length < 1 && (
+          <Stack maxWidth="sm" sx={styles.noList}>
             <Typography>
-              Shopping List
+              Your shopping list is empty :(
             </Typography>
-          </Toolbar>
-        </AppBar>
-        <Box>
-          {
-            
-          }
-        </Box>
-    </Box>
+            <Button variant='contained' sx={styles.addButton}>Add your first Item</Button>
+          </Stack>
+        )
+      }
+    </Container>
+  </Stack>
   );
 }
 
