@@ -26,4 +26,14 @@ export default function UseShoppingList(props: any) {
         setShoppingList(shoppingList.splice(index, 1));
     }
 
+    function overwriteItem(itemID: string, item: Item) {
+        const index = shoppingList.findIndex((item) => {
+            return item.id == itemID
+        })
+        shoppingList[index] = item
+        setShoppingList(shoppingList)
+    }
+
+    return { shoppingList, addToShoppingList, checkItem, removeFromShoppingList, overwriteItem}
+
 }
