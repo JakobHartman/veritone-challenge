@@ -19,7 +19,17 @@ export const styles = {
         textTransform:'none'
     },
 
-    appBar: {
+    appBarMain: {
         bgcolor: '#4D81B7'
+    },
+    appBarGrey: {
+        bgcolor: '#FAFAFA',
+        color: '#5C6269'
+    },
+    addDrawer: {
+        width: '33%'
+    },
+    addDrawerHeader: {
+        mr: '70%'
     }
 }
