@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import Box from '@mui/material/Box';
 import './App.css';
-import { AppBar, Button, Container, Icon, Stack, SwipeableDrawer, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Container, Icon, Stack, SwipeableDrawer, TextareaAutosize, TextField, Toolbar, Typography } from '@mui/material';
 import UseShoppingList from './components/hooks/useShoppingList';
 import { styles } from './styles'
-import AddItemDrawer from './components/views/AddItemDrawer';
+import ShoppingDrawer, { DrawerType } from './components/views/ShoppingDrawer';
 
 function App() {
   const [isOpen, setOpen] = useState(false)
@@ -42,7 +42,7 @@ function App() {
         )
       }
     </Container>
-    <AddItemDrawer onClose={onClose} onOpen={onOpen} isOpen={isOpen}/>
+    <ShoppingDrawer onClose={onClose} onOpen={onOpen} isOpen={isOpen}  type={DrawerType.ADD}/>
   </Stack>
   );
 }

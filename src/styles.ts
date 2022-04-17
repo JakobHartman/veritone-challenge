@@ -1,6 +1,3 @@
-import { padding } from "@mui/system";
-
-
 export const styles = {
     noList: {
         justifyContent:'center',
@@ -31,5 +28,12 @@ export const styles = {
     },
     addDrawerHeader: {
         mr: '70%'
+    },
+    drawerContent: {
+        mt: 10
+    },
+    drawerCancelButton: {
+        textTransform:'none',
+        color: "#000"
     }
 }
