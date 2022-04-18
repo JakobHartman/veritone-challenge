@@ -24,10 +24,11 @@ function App() {
 
   const handleCheckItem = (event: any) => {
     const found = shoppingList.find((item) => { 
-      return item.id === event.target.id
+      return item.id === event.target.id;
     });
     if(found){
       found.isChecked = event.target.checked;
+      overwriteItem(found)
     }
   }
 
@@ -79,7 +80,7 @@ function App() {
             <List>
               {shoppingList.map( item => (
                 <ListItem key={item.id} sx={styles.listItem}>
-                  <Checkbox onChange={handleCheckItem} id={item.id}/>
+                  <Checkbox checked={item.isChecked} onChange={handleCheckItem} id={item.id}/>
                   <Stack>
                     <Typography>{item.name}</Typography>
                     <Typography>{item.description}</Typography>
