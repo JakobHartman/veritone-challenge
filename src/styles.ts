@@ -34,6 +34,10 @@ export const styles = {
     },
     drawerCancelButton: {
         textTransform:'none',
-        color: "#000"
+        color: "#000",
+        mr: 3
+    },
+    listItem: {
+        border: '1px solid black',
     }
 }

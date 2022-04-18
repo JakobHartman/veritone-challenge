@@ -8,9 +8,11 @@ import { AppBar,
     TextField, 
     Stack, 
     Button, 
-    Grid
+    Grid,
+    Checkbox
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import { styles } from '../../styles'
 import { Item } from "../../types";
 
@@ -19,6 +21,8 @@ interface ItemDrawerProps {
     isOpen: boolean;
     onClose: () => void;
     onOpen: () => void;
+    handleChange: (item: Item) => void;
+    onFinish?: () => void;
     characterLimit?: number;
     item?: Item;
     type: DrawerType;
@@ -34,14 +38,21 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
     let CHARACTER_LIMIT = props.characterLimit ? props.characterLimit : 100;
     const [descriptionText, setDescriptionText] = useState(props.item ? props.item.description : "");
     const [nameText, setName] = useState(props.item ? props.item.name : "");
-    const [count, setCount] = useState(props.item ? props.item.count : 0);
+    const [count, setCount] = useState( props.item ? props.item.count : 0);
+    const [checked, setChecked] = useState(props.item ? props.item.isChecked : false)
+
+
+    useEffect(() => {
+        console.debug("Item has been updated...")
+    }, [props.item])
+
 
     const handleTitle = () => {
         switch(props.type){
             case DrawerType.ADD:
                 return "Add an Item";
             case DrawerType.EDIT:
-                return "";    
+                return "Edit an Item";    
             default:
                 throw new Error("Invalid Type...")   
         }
@@ -52,7 +63,18 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
             case DrawerType.ADD:
                 return "Add your new item below";
             case DrawerType.EDIT:
-                return "";    
+                return "Edit your item below";    
+            default:
+                throw new Error("Invalid Type...")   
+        }
+    }
+
+    const handleSaveButtonText = () => {
+        switch(props.type){
+            case DrawerType.ADD:
+                return "Add Item";
+            case DrawerType.EDIT:
+                return "Save Item";    
             default:
                 throw new Error("Invalid Type...")   
         }
@@ -65,6 +87,10 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
         let newValue = event.target.value.replace(/\D/g,'');
         setCount(newValue)
         event.target.value = newValue; 
+    }
+
+    const handleCheckChange = (event: any) => {
+        setChecked(event.target.checked)
     }
 
     return (
@@ -89,7 +115,7 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
                 <Stack spacing={2}>
                     <Typography>{handleTitle()}</Typography>
                     <Typography>{handleInstructions()}</Typography>
-                    <TextField id="name" label="Item Name" variant="outlined" onChange={handleNameChange}/>
+                    <TextField id="name" label="Item Name" variant="outlined" onChange={handleNameChange} value={nameText}/>
                     <TextField id='description' 
                         label="Description" 
                         inputProps={{maxLength: CHARACTER_LIMIT}} 
@@ -97,15 +123,46 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
                         onChange={handleDescChange}
                         variant="outlined"
                         rows={4}
+                        value={descriptionText}
                         multiline/>
                     <TextField id='itemCount' 
                         label="How many?" 
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                         onChange={handleCountChange}
+                        value={count}
                         variant="outlined"/>
+                    {
+                        props.type === DrawerType.EDIT && (
+                            <Container>
+                                <Checkbox checked={checked} onChange={handleCheckChange}/>
+                                <Typography>Purchased</Typography>
+                            </Container>
+                        )
+                    }    
                     <Grid container justifyContent="flex-end">
-                        <Button sx={styles.drawerCancelButton}>Cancel</Button>
-                        <Button variant='contained'>Add Task</Button>
+                        <Button sx={styles.drawerCancelButton} onClick={props.onClose}>Cancel</Button>
+                        <Button variant='contained' onClick={() => {
+
+                            if(props.type === DrawerType.EDIT && props.item){
+                                props.handleChange({
+                                    id: props.item.id,
+                                    name: nameText,
+                                    description: descriptionText,
+                                    count: count,
+                                    isChecked: checked
+                                });
+                            }else {
+                                props.handleChange(
+                                    {
+                                        id: uuidv4(),
+                                        name: nameText,
+                                        description: descriptionText,
+                                        count: count,
+                                        isChecked: false
+                                    })
+                            }
+                            props.onClose()
+                            props.onFinish?.()
+                        }}>{handleSaveButtonText()}</Button>
                     </Grid>  
                 </Stack>           
             </Container>

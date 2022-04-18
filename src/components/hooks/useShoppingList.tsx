@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import { useState } from 'react';
 import { Item } from '../../types';
 
 
@@ -19,18 +19,15 @@ export default function UseShoppingList(props?: any) {
     }
 
     function removeFromShoppingList(itemID: string){
-        setShoppingList(shoppingList.splice(findItemIndex(itemID), 1));
+        const newList = shoppingList.filter((item) => {
+            return item.id !== itemID;
+        });
+        setShoppingList(newList);
     }
 
-    function overwriteItem(itemID: string, item: Item) {
-        shoppingList[findItemIndex(itemID)] = item
-        setShoppingList(shoppingList)
-    }
-
-    function findItemIndex(itemID: string){
-        return shoppingList.findIndex((item) => {
-            return item.id === itemID
-        })
+    function overwriteItem(item: Item) {
+        removeFromShoppingList(item.id);
+        addToShoppingList(item);
     }
 
     return { shoppingList, addToShoppingList, checkItem, removeFromShoppingList, overwriteItem}
