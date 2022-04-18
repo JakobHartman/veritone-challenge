@@ -36,15 +36,29 @@ export enum  DrawerType {
 export default function ShoppingDrawer(props: ItemDrawerProps){
 
     let CHARACTER_LIMIT = props.characterLimit ? props.characterLimit : 100;
-    const [descriptionText, setDescriptionText] = useState(props.item ? props.item.description : "");
-    const [nameText, setName] = useState(props.item ? props.item.name : "");
-    const [count, setCount] = useState( props.item ? props.item.count : 0);
-    const [checked, setChecked] = useState(props.item ? props.item.isChecked : false)
+    const [descriptionText, setDescriptionText] = useState("");
+    const [nameText, setName] = useState("");
+    const [count, setCount] = useState(0);
+    const [checked, setChecked] = useState( false)
 
 
     useEffect(() => {
-        console.debug("Item has been updated...")
-    }, [props.item])
+        if(props.item && props.type === DrawerType.EDIT){
+            setDescriptionText(props.item.description);
+            setName(props.item.name);
+            setCount(props.item.count);
+            setChecked(props.item.isChecked);
+        } else {
+            setDescriptionText("");
+            setName("");
+            setCount(0);
+            setChecked(false);
+        }
+    }, [props.type, props.item])
+
+    const getKey = () => {
+        return props.item ? props.item.id : uuidv4()
+    }
 
 
     const handleTitle = () => {
@@ -100,6 +114,7 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
             onClose={props.onClose}
             onOpen={props.onOpen}
             PaperProps={{style: styles.addDrawer}}
+            key={props.item?.id}
           >
             <AppBar position='sticky' sx={styles.appBarGrey}>
                 <Toolbar variant='dense'>
@@ -113,7 +128,7 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
             </AppBar>
             <Container sx={styles.drawerContent}>
                 <Stack spacing={2}>
-                    <Typography>{handleTitle()}</Typography>
+                    <Typography key={getKey()}>{handleTitle()}</Typography>
                     <Typography>{handleInstructions()}</Typography>
                     <TextField id="name" label="Item Name" variant="outlined" onChange={handleNameChange} value={nameText}/>
                     <TextField id='description' 
@@ -122,7 +137,7 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
                         helperText={`${descriptionText.length}/${CHARACTER_LIMIT}`}
                         onChange={handleDescChange}
                         variant="outlined"
-                        rows={4}
+                        rows={5}
                         value={descriptionText}
                         multiline/>
                     <TextField id='itemCount' 
@@ -132,10 +147,10 @@ export default function ShoppingDrawer(props: ItemDrawerProps){
                         variant="outlined"/>
                     {
                         props.type === DrawerType.EDIT && (
-                            <Container>
+                            <Stack direction='row'>
                                 <Checkbox checked={checked} onChange={handleCheckChange}/>
-                                <Typography>Purchased</Typography>
-                            </Container>
+                                <Typography sx={{mt: 1.25}}>Purchased</Typography>
+                            </Stack>
                         )
                     }    
                     <Grid container justifyContent="flex-end">
